@@ -1,0 +1,85 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.navItems {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.loginContainer {
+  margin-left: auto;
+  position: relative;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.hamburger div {
+  width: 24px;
+  height: 2px;
+  background-color: #333;
+  transition: all 0.2s ease-in-out;
+}
+
+.mobileMenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  padding: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  z-index: 1000;
+}
+
+.mobileMenu a {
+  padding: 0.75rem 1.5rem;
+  width: 100%;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+  
+  .navLinks {
+    display: none;
+  }
+  
+  .mobileMenu.open {
+    display: flex;
+  }
+  
+  .loginContainer {
+    margin-left: 0;
+  }
+}
