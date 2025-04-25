@@ -23,11 +23,15 @@ export async function POST(request) {
     // Connect to database
     await connectToDatabase();
     
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    // Check if user already exists with credentials provider
+    const existingUser = await User.findOne({ 
+      email,
+      authProviders: 'credentials' 
+    });
+    
     if (existingUser) {
       return new Response(
-        JSON.stringify({ message: 'User with this email already exists' }), 
+        JSON.stringify({ message: 'User with this email already exists using password login' }), 
         { status: 409, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -37,6 +41,7 @@ export async function POST(request) {
       name,
       email,
       password, // Will be hashed via the mongoose pre-save hook
+      authProviders: ['credentials'], // Mark this user as using credentials provider
     });
     
     // Return success but don't send the password
@@ -45,6 +50,7 @@ export async function POST(request) {
       name: newUser.name,
       email: newUser.email,
       createdAt: newUser.createdAt,
+      authProviders: newUser.authProviders,
     };
     
     return new Response(

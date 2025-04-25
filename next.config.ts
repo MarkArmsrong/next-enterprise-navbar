@@ -10,6 +10,13 @@ const config: NextConfig = {
       fullUrl: true,
     },
   },
+  // Add image configuration to allow external domains
+  images: {
+    domains: [
+      'lh3.googleusercontent.com', // Google profile images
+      'avatars.githubusercontent.com', // GitHub profile images
+    ],
+  },
   rewrites: async () => [
     { source: "/healthz", destination: "/api/health" },
     { source: "/api/healthz", destination: "/api/health" },

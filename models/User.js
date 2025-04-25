@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, 'Email is required'],
-    unique: true,
+    index: true, // Index for faster queries
     match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
   },
   password: {
@@ -36,10 +36,18 @@ const UserSchema = new mongoose.Schema({
   sessions: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Session'
-  }]
+  }],
+  // Add provider information to track authentication methods
+  authProviders: {
+    type: [String],
+    default: [],
+  }
 }, {
   timestamps: true,
 });
+
+// Remove the unique constraint on email to allow independent accounts
+UserSchema.index({ email: 1, authProviders: 1 }, { unique: true, sparse: true });
 
 // Hash password before saving
 UserSchema.pre('save', async function(next) {

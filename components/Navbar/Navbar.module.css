@@ -33,6 +33,143 @@
   position: relative;
 }
 
+/* User profile styles */
+.userProfile {
+  position: relative;
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.profileButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.profileImage {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profileImagePlaceholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #4F46E5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.userName {
+  font-weight: 500;
+}
+
+.profileDropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 240px;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+  overflow: hidden;
+}
+
+.profileInfo {
+  padding: 1rem;
+}
+
+.profileName {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.profileEmail {
+  font-size: 0.875rem;
+  color: #666;
+  word-break: break-all;
+}
+
+.providerBadge {
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  background-color: #f3f4f6;
+  border-radius: 1rem;
+  display: inline-block;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: #eee;
+}
+
+.logoutButton {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Mobile user profile styles */
+.mobileUserProfile {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  gap: 0.5rem;
+}
+
+.mobileProfileImage {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mobileProfileImagePlaceholder {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #4F46E5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mobileUserName {
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+.mobileLogoutButton {
+  background-color: transparent;
+  border: none;
+  color: #4F46E5;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Hamburger and mobile menu styles */
 .hamburger {
   display: none;
   flex-direction: column;
