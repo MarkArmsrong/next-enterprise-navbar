@@ -26,6 +26,19 @@ const Navbar = () => {
     return session.user.name || '';
   }
   
+  // Get the appropriate profile image based on the provider
+  const getProfileImage = () => {
+    if (!session?.user) return null;
+    
+    // If we have provider-specific image, use it
+    if (session.user.providerImage) {
+      return session.user.providerImage;
+    }
+    
+    // Fallback to regular image
+    return session.user.image || null;
+  }
+  
   // Format provider name for display
   const formatProviderName = (provider: string | undefined) => {
     if (!provider) return '';
@@ -52,6 +65,10 @@ const Navbar = () => {
     closeProfileDropdown()
     await signOut({ redirect: true, callbackUrl: '/' });
   };
+
+  // Profile image to display
+  const profileImage = getProfileImage();
+  const userName = session?.user?.name || '';
 
   return (
     <nav className={styles.navbar}>
@@ -81,17 +98,17 @@ const Navbar = () => {
                 className={styles.profileButton}
                 onClick={toggleProfileDropdown}
               >
-                {session.user?.image ? (
+                {profileImage ? (
                   <Image 
-                    src={session.user.image} 
-                    alt={session.user.name || "User"} 
+                    src={profileImage} 
+                    alt={userName} 
                     width={32} 
                     height={32} 
                     className={styles.profileImage}
                   />
                 ) : (
                   <div className={styles.profileImagePlaceholder}>
-                    {session.user?.name?.charAt(0) || '?'}
+                    {userName?.charAt(0) || '?'}
                   </div>
                 )}
                 <span className={styles.userName}>{getDisplayName()}</span>
@@ -100,6 +117,21 @@ const Navbar = () => {
               {isProfileDropdownOpen && (
                 <div className={styles.profileDropdown} onMouseLeave={closeProfileDropdown}>
                   <div className={styles.profileInfo}>
+                    <div className={styles.profileImageContainer}>
+                      {profileImage ? (
+                        <Image 
+                          src={profileImage} 
+                          alt={userName} 
+                          width={48} 
+                          height={48} 
+                          className={styles.profileImageLarge}
+                        />
+                      ) : (
+                        <div className={styles.profileImagePlaceholderLarge}>
+                          {userName?.charAt(0) || '?'}
+                        </div>
+                      )}
+                    </div>
                     <div className={styles.profileName}>{getDisplayName()}</div>
                     <div className={styles.profileEmail}>{session.user?.email}</div>
                     {session.user?.provider && (
@@ -144,17 +176,17 @@ const Navbar = () => {
         <div className="relative py-2 px-6">
           {session ? (
             <div className={styles.mobileUserProfile}>
-              {session.user?.image ? (
+              {profileImage ? (
                 <Image 
-                  src={session.user.image} 
-                  alt={session.user.name || "User"} 
+                  src={profileImage} 
+                  alt={userName} 
                   width={24} 
                   height={24} 
                   className={styles.mobileProfileImage}
                 />
               ) : (
                 <div className={styles.mobileProfileImagePlaceholder}>
-                  {session.user?.name?.charAt(0) || '?'}
+                  {userName?.charAt(0) || '?'}
                 </div>
               )}
               <span className={styles.mobileUserName}>{getDisplayName()}</span>

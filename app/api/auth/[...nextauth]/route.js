@@ -86,6 +86,10 @@ const handler = NextAuth({
         if (token.providerName) {
           session.user.providerName = token.providerName;
         }
+        // Add provider-specific image if available
+        if (token.providerImage) {
+          session.user.providerImage = token.providerImage;
+        }
       }
       return session;
     },
@@ -102,6 +106,27 @@ const handler = NextAuth({
         if (user?.name) {
           token.providerName = user.name;
         }
+        
+        if (user?.image) {
+          token.providerImage = user.image;
+        }
+        
+        // After initial sign-in, fetch the user from the database to get provider-specific data
+        try {
+          await connectToDatabase();
+          const dbUser = await User.findOne({ email: user.email });
+          
+          if (dbUser) {
+            // Store provider-specific images based on the current provider
+            if (account.provider === 'github' && dbUser.githubImage) {
+              token.providerImage = dbUser.githubImage;
+            } else if (account.provider === 'google' && dbUser.googleImage) {
+              token.providerImage = dbUser.googleImage;
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching user data for token:", error);
+        }
       }
       
       return token;
@@ -112,53 +137,77 @@ const handler = NextAuth({
           // Connect to the database
           await connectToDatabase();
           
-          // When using OAuth providers, the ID from the provider may not match MongoDB's ObjectId format
-          // Instead of finding by ID, we should find by email which is more reliable across providers
           if (user.email) {
-            // Find the user by email (with any provider)
+            // Find the user by email
             const dbUser = await User.findOne({ email: user.email });
             
             if (dbUser) {
-              // For OAuth providers, we want to allow sign-in even if the email exists with another provider
-              // This is the key part that fixes the OAuthAccountNotLinked error
               const provider = account.provider;
+              
+              // Track the provider and profile data
+              let updateData = {};
               
               // Add the provider to the user's authProviders array if not already present
               if (provider && !dbUser.authProviders.includes(provider)) {
-                dbUser.authProviders.push(provider);
-                await dbUser.save();
+                updateData.authProviders = [...dbUser.authProviders, provider];
               }
               
-              // Return true to allow sign-in
+              // Store provider-specific data in the database
+              if (provider === 'github' && user.image) {
+                updateData.githubImage = user.image;
+              } else if (provider === 'google' && user.image) {
+                updateData.googleImage = user.image;
+              }
+              
+              // Apply updates if we have any
+              if (Object.keys(updateData).length > 0) {
+                await User.findByIdAndUpdate(dbUser._id, updateData);
+              }
+              
               return true;
             }
           }
         } catch (error) {
           console.error("Error updating auth providers:", error);
-          // Continue sign-in process even if tracking fails
         }
       }
       
-      // Allow all sign-ins to proceed
       return true;
     }
   },
   events: {
-    createUser: async ({ user }) => {
+    createUser: async ({ user, account }) => {
       try {
         await connectToDatabase();
         
-        // Check if authProviders exists and has values
-        if (!user.authProviders || user.authProviders.length === 0) {
-          // Find user by email which is more reliable than ID across providers
-          if (user.email) {
-            const dbUser = await User.findOne({ email: user.email });
-            
-            if (dbUser && !dbUser.authProviders?.length) {
-              // Set the auth provider based on the account type
-              dbUser.authProviders = ['oauth'];
-              await dbUser.save();
+        // Find the newly created user
+        const dbUser = await User.findOne({ email: user.email });
+        
+        if (dbUser) {
+          // Update fields based on the account data
+          const updates = {};
+          
+          // Set auth providers
+          if (!dbUser.authProviders?.length) {
+            if (account?.provider) {
+              updates.authProviders = [account.provider];
+            } else {
+              updates.authProviders = ['oauth'];
             }
+          }
+          
+          // Save provider-specific profile image
+          if (user.image) {
+            if (account?.provider === 'github') {
+              updates.githubImage = user.image;
+            } else if (account?.provider === 'google') {
+              updates.googleImage = user.image;
+            }
+          }
+          
+          // Apply updates if we have any
+          if (Object.keys(updates).length > 0) {
+            await User.findByIdAndUpdate(dbUser._id, updates);
           }
         }
       } catch (error) {

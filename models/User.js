@@ -21,6 +21,13 @@ const UserSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  // Provider-specific profile images
+  googleImage: {
+    type: String,
+  },
+  githubImage: {
+    type: String,
+  },
   emailVerified: {
     type: Date,
     default: null,
