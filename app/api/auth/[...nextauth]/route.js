@@ -86,9 +86,12 @@ const handler = NextAuth({
         if (token.providerName) {
           session.user.providerName = token.providerName;
         }
-        // Add provider-specific image if available
+        // Always set the image to the provider-specific image if available
         if (token.providerImage) {
-          session.user.providerImage = token.providerImage;
+          session.user.image = token.providerImage;
+        } else {
+          // fallback to default image if providerImage is not set
+          session.user.image = session.user.image || null;
         }
       }
       return session;
