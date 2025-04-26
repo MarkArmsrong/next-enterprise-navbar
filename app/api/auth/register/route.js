@@ -23,15 +23,11 @@ export async function POST(request) {
     // Connect to database
     await connectToDatabase();
     
-    // Check if user already exists with credentials provider
-    const existingUser = await User.findOne({ 
-      email,
-      authProviders: 'credentials' 
-    });
-    
+    // Check if user already exists with this email (any provider)
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return new Response(
-        JSON.stringify({ message: 'User with this email already exists using password login' }), 
+        JSON.stringify({ message: 'User with this email already exists' }),
         { status: 409, headers: { 'Content-Type': 'application/json' } }
       );
     }
