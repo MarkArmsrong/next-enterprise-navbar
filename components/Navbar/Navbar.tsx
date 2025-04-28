@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
 import Image from "next/image"
-import styles from "./Navbar.module.css"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useSession, signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
+import { useState } from "react"
+import styles from "./Navbar.module.css"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
