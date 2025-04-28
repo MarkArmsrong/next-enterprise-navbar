@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import styles from './Navbar.module.css'
-import { usePathname } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { useState } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import styles from "./Navbar.module.css"
+import { usePathname } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -15,34 +15,34 @@ const Navbar = () => {
 
   // Get the appropriate display name based on the provider
   const getDisplayName = () => {
-    if (!session?.user) return '';
-    
+    if (!session?.user) return ""
+
     // If we have provider-specific name from the token, use it
     if (session.user.providerName) {
-      return `${session.user.providerName} (${formatProviderName(session.user.provider)})`;
+      return `${session.user.providerName} (${formatProviderName(session.user.provider)})`
     }
-    
+
     // Fallback to regular name
-    return session.user.name || '';
+    return session.user.name || ""
   }
-  
+
   // Get the appropriate profile image based on the provider
   const getProfileImage = () => {
-    if (!session?.user) return null;
-    
+    if (!session?.user) return null
+
     // If we have provider-specific image, use it
     if (session.user.providerImage) {
-      return session.user.providerImage;
+      return session.user.providerImage
     }
-    
+
     // Fallback to regular image
-    return session.user.image || null;
+    return session.user.image || null
   }
-  
+
   // Format provider name for display
   const formatProviderName = (provider: string | undefined) => {
-    if (!provider) return '';
-    return provider.charAt(0).toUpperCase() + provider.slice(1);
+    if (!provider) return ""
+    return provider.charAt(0).toUpperCase() + provider.slice(1)
   }
 
   const toggleMenu = () => {
@@ -63,12 +63,12 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     closeProfileDropdown()
-    await signOut({ redirect: true, callbackUrl: '/' });
-  };
+    await signOut({ redirect: true, callbackUrl: "/" })
+  }
 
   // Profile image to display
-  const profileImage = getProfileImage();
-  const userName = session?.user?.name || '';
+  const profileImage = getProfileImage()
+  const userName = session?.user?.name || ""
 
   return (
     <nav className={styles.navbar}>
@@ -79,13 +79,13 @@ const Navbar = () => {
       <div className={styles.navItems}>
         {/* Desktop Navigation */}
         <div className={styles.navLinks}>
-          <Link href="/" className={pathname === '/' ? 'font-bold' : ''}>
+          <Link href="/" className={pathname === "/" ? "font-bold" : ""}>
             Home
           </Link>
-          <Link href="/about" className={pathname === '/about' ? 'font-bold' : ''}>
+          <Link href="/about" className={pathname === "/about" ? "font-bold" : ""}>
             About
           </Link>
-          <Link href="/contact" className={pathname === '/contact' ? 'font-bold' : ''}>
+          <Link href="/contact" className={pathname === "/contact" ? "font-bold" : ""}>
             Contact
           </Link>
         </div>
@@ -94,42 +94,29 @@ const Navbar = () => {
         <div className={styles.loginContainer}>
           {session ? (
             <div className={styles.userProfile}>
-              <div 
-                className={styles.profileButton}
-                onClick={toggleProfileDropdown}
-              >
+              <div className={styles.profileButton} onClick={toggleProfileDropdown}>
                 {profileImage ? (
-                  <Image 
-                    src={profileImage} 
-                    alt={userName} 
-                    width={32} 
-                    height={32} 
-                    className={styles.profileImage}
-                  />
+                  <Image src={profileImage} alt={userName} width={32} height={32} className={styles.profileImage} />
                 ) : (
-                  <div className={styles.profileImagePlaceholder}>
-                    {userName?.charAt(0) || '?'}
-                  </div>
+                  <div className={styles.profileImagePlaceholder}>{userName?.charAt(0) || "?"}</div>
                 )}
                 <span className={styles.userName}>{getDisplayName()}</span>
               </div>
-              
+
               {isProfileDropdownOpen && (
                 <div className={styles.profileDropdown} onMouseLeave={closeProfileDropdown}>
                   <div className={styles.profileInfo}>
                     <div className={styles.profileImageContainer}>
                       {profileImage ? (
-                        <Image 
-                          src={profileImage} 
-                          alt={userName} 
-                          width={48} 
-                          height={48} 
+                        <Image
+                          src={profileImage}
+                          alt={userName}
+                          width={48}
+                          height={48}
                           className={styles.profileImageLarge}
                         />
                       ) : (
-                        <div className={styles.profileImagePlaceholderLarge}>
-                          {userName?.charAt(0) || '?'}
-                        </div>
+                        <div className={styles.profileImagePlaceholderLarge}>{userName?.charAt(0) || "?"}</div>
                       )}
                     </div>
                     <div className={styles.profileName}>{getDisplayName()}</div>
@@ -163,7 +150,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation Menu */}
-      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.open : ''}`}>
+      <div className={`${styles.mobileMenu} ${isMenuOpen ? styles.open : ""}`}>
         <Link href="/" onClick={closeMenu}>
           Home
         </Link>
@@ -173,21 +160,13 @@ const Navbar = () => {
         <Link href="/contact" onClick={closeMenu}>
           Contact
         </Link>
-        <div className="relative py-2 px-6">
+        <div className="relative px-6 py-2">
           {session ? (
             <div className={styles.mobileUserProfile}>
               {profileImage ? (
-                <Image 
-                  src={profileImage} 
-                  alt={userName} 
-                  width={24} 
-                  height={24} 
-                  className={styles.mobileProfileImage}
-                />
+                <Image src={profileImage} alt={userName} width={24} height={24} className={styles.mobileProfileImage} />
               ) : (
-                <div className={styles.mobileProfileImagePlaceholder}>
-                  {userName?.charAt(0) || '?'}
-                </div>
+                <div className={styles.mobileProfileImagePlaceholder}>{userName?.charAt(0) || "?"}</div>
               )}
               <span className={styles.mobileUserName}>{getDisplayName()}</span>
               <button onClick={handleLogout} className={styles.mobileLogoutButton}>

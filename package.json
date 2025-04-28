@@ -8,8 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx}\"",
-    "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
+
+
+    "prettier:fix": "prettier --write \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"models/**/*.{js,jsx,ts,tsx}\"",
+    "prettier": "prettier --check \"app/**/*.{js,jsx,ts,tsx}\" \"components/**/*.{js,jsx,ts,tsx}\" \"models/**/*.{js,jsx,ts,tsx}\"",
+
+
     "analyze": "cross-env ANALYZE=true pnpm run build",
     "storybook": "cross-env FORCE_COLOR=1 storybook dev -p 6006",
     "test-storybook": "cross-env FORCE_COLOR=1 test-storybook",
