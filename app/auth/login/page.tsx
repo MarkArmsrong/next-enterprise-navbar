@@ -2,7 +2,7 @@
 
 import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
@@ -12,6 +12,20 @@ export default function LoginPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get('error');
+
+  let errorMessage = error;
+  // Prefer error from state, but if not present, use error from URL
+  if (!errorMessage && urlError) {
+    if (urlError === 'CredentialsSignin') {
+      errorMessage = 'Invalid email or password. Please try again.';
+    } else if (urlError === 'AccessDenied') {
+      errorMessage = 'Access denied. Please check your credentials or permissions.';
+    } else {
+      errorMessage = 'An unknown error occurred. Please try again.';
+    }
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,25 +41,27 @@ export default function LoginPage() {
           },
           body: JSON.stringify({ name, email, password }),
         });
-        
-        const data = await res.json();
-        
+        const data = (await res.json()) as { message?: string };
+
         if (!res.ok) {
-          throw new Error(data.message || 'Registration failed');
+          setError(data.message || 'Registration failed');
+          return; // Do not attempt sign-in if registration failed
         }
-        
+
         // After registration, log in automatically
         const result = await signIn('credentials', {
           email,
           password,
           redirect: false,
         });
-        
+
         if (result?.error) {
-          setError(result.error);
+          setError(result.error === 'CredentialsSignin'
+            ? 'Invalid email or password. Please try again.'
+            : result.error);
           return;
         }
-        
+
         router.push('/');
       } catch (err) {
         setError((err as Error).message);
@@ -57,12 +73,14 @@ export default function LoginPage() {
         password,
         redirect: false,
       });
-      
+
       if (result?.error) {
-        setError(result.error);
+        setError(result.error === 'CredentialsSignin'
+          ? 'Invalid email or password. Please try again.'
+          : result.error);
         return;
       }
-      
+
       router.push('/');
     }
   };
@@ -171,9 +189,9 @@ export default function LoginPage() {
               />
             </div>
 
-            {error && (
+            {errorMessage && (
               <div className="bg-red-50 p-3 text-sm text-red-600 rounded">
-                {error}
+                {errorMessage}
               </div>
             )}
 
