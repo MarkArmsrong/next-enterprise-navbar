@@ -110,7 +110,19 @@ const handler = NextAuth({
           token.providerName = user.name
         }
 
-        if (user?.image) {
+        if (account.provider === "github") {
+          if (user?.githubImage) {
+            token.providerImage = user.githubImage
+          } else if (user?.image) {
+            token.providerImage = user.image
+          }
+        } else if (account.provider === "google") {
+          if (user?.googleImage) {
+            token.providerImage = user.googleImage
+          } else if (user?.image) {
+            token.providerImage = user.image
+          }
+        } else if (user?.image) {
           token.providerImage = user.image
         }
 
@@ -121,10 +133,20 @@ const handler = NextAuth({
 
           if (dbUser) {
             // Store provider-specific images based on the current provider
-            if (account.provider === "github" && dbUser.githubImage) {
-              token.providerImage = dbUser.githubImage
-            } else if (account.provider === "google" && dbUser.googleImage) {
-              token.providerImage = dbUser.googleImage
+            if (account.provider === "github") {
+              if (dbUser.githubImage) {
+                token.providerImage = dbUser.githubImage
+              } else if (dbUser.image) {
+                token.providerImage = dbUser.image
+              }
+            } else if (account.provider === "google") {
+              if (dbUser.googleImage) {
+                token.providerImage = dbUser.googleImage
+              } else if (dbUser.image) {
+                token.providerImage = dbUser.image
+              }
+            } else if (dbUser.image) {
+              token.providerImage = dbUser.image
             }
           }
         } catch (error) {
@@ -156,9 +178,9 @@ const handler = NextAuth({
               }
 
               // Store provider-specific data in the database
-              if (provider === "github" && user.image) {
+              if (provider === "github" && user.image && !user.githubImage) {
                 updateData.githubImage = user.image
-              } else if (provider === "google" && user.image) {
+              } else if (provider === "google" && user.image && !user.googleImage) {
                 updateData.googleImage = user.image
               }
 
