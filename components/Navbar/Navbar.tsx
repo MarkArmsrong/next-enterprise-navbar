@@ -13,36 +13,20 @@ const Navbar = () => {
   const pathname = usePathname()
   const { data: session } = useSession()
 
-  // Get the appropriate display name based on the provider
+  // Get the appropriate display name
   const getDisplayName = () => {
     if (!session?.user) return ""
-
-    // If we have provider-specific name from the token, use it
-    if (session.user.providerName) {
-      return `${session.user.providerName} (${formatProviderName(session.user.provider)})`
-    }
-
-    // Fallback to regular name
+    
+    // Just use the name from the session
     return session.user.name || ""
   }
 
-  // Get the appropriate profile image based on the provider
+  // Get the appropriate profile image
   const getProfileImage = () => {
     if (!session?.user) return null
 
-    // If we have provider-specific image, use it
-    if (session.user.providerImage) {
-      return session.user.providerImage
-    }
-
-    // Fallback to regular image
+    // Return the image from the session
     return session.user.image || null
-  }
-
-  // Format provider name for display
-  const formatProviderName = (provider: string | undefined) => {
-    if (!provider) return ""
-    return provider.charAt(0).toUpperCase() + provider.slice(1)
   }
 
   const toggleMenu = () => {
@@ -121,11 +105,6 @@ const Navbar = () => {
                     </div>
                     <div className={styles.profileName}>{getDisplayName()}</div>
                     <div className={styles.profileEmail}>{session.user?.email}</div>
-                    {session.user?.provider && (
-                      <div className={styles.providerBadge}>
-                        Signed in with {formatProviderName(session.user.provider)}
-                      </div>
-                    )}
                   </div>
                   <div className={styles.dropdownDivider}></div>
                   <button onClick={handleLogout} className={styles.logoutButton}>
