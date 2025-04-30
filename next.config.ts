@@ -3,6 +3,7 @@ import { type NextConfig } from "next"
 
 import { env } from "./env.mjs"
 
+// Trigger a new deployment - Updated: April 30, 2025
 const config: NextConfig = {
   reactStrictMode: true,
   logging: {

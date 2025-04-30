@@ -17,19 +17,35 @@ const clientPromise = (async () => {
   return client.connect()
 })()
 
+// Determine if we're in development or production
+const isDevelopment = process.env.NODE_ENV === "development"
+
+// Debug message about current environment
+console.log(`NextAuth initializing in ${isDevelopment ? "DEVELOPMENT" : "PRODUCTION"} mode`)
+
 const handler = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
+  debug: isDevelopment || process.env.NEXTAUTH_DEBUG === "true",
+  logger: {
+    error: (code, metadata) => {
+      console.error(`NextAuth Error [${code}]:`, metadata)
+    },
+    warn: (code) => {
+      console.warn(`NextAuth Warning [${code}]`)
+    },
+    debug: (code, metadata) => {
+      console.log(`NextAuth Debug [${code}]:`, metadata)
+    },
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      // Allow linking accounts with the same email
       allowDangerousEmailAccountLinking: true,
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
-      // Allow linking accounts with the same email
       allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
