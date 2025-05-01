@@ -30,7 +30,7 @@ export default function Web() {
               Next.js Enterprise Navbar Template
             </h1>
             <p className="mb-6 max-w-2xl font-light text-gray-500 md:text-lg lg:mb-8 lg:text-xl dark:text-gray-400">
-              A professionally designed, fully featured navbar component for your Next.js projects. Includes authentication
+              V2 - A professionally designed, fully featured navbar component for your Next.js projects. Includes authentication
               integration, responsive design, and dark mode support - ready to drop into your application.
             </p>
             <Button href="https://github.com/MarkArmsrong/next-enterprise-navbar" className="mr-3">
