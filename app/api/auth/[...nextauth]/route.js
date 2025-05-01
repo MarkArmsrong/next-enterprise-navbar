@@ -22,13 +22,25 @@ const isDevelopment = process.env.NODE_ENV === "development"
 
 // Debug message about current environment
 console.log(`NextAuth initializing in ${isDevelopment ? "DEVELOPMENT" : "PRODUCTION"} mode`)
+console.log(`Using NEXTAUTH_URL: ${process.env.NEXTAUTH_URL}`)
 
 const handler = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
-  debug: isDevelopment || process.env.NEXTAUTH_DEBUG === "true",
+  debug: true, // Always enable debug for better error logs in production
   logger: {
     error: (code, metadata) => {
       console.error(`NextAuth Error [${code}]:`, metadata)
+      // Log additional information for redirect_uri errors
+      if (code === 'oauth_callback_error') {
+        console.error('OAuth Callback Error Details:', {
+          provider: metadata?.provider,
+          error: metadata?.error,
+          message: metadata?.message,
+          stack: metadata?.stack,
+          redirectUrl: process.env.NEXTAUTH_URL,
+          callbackUrl: `${process.env.NEXTAUTH_URL}/api/auth/callback/${metadata?.provider || 'unknown'}`
+        })
+      }
     },
     warn: (code) => {
       console.warn(`NextAuth Warning [${code}]`)

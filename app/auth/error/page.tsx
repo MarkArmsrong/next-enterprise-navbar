@@ -2,13 +2,16 @@
 
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 
 function ErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get("error")
+  const errorDescription = searchParams.get("error_description")
+  const [showDebugInfo, setShowDebugInfo] = useState(false)
 
   let errorMessage = "An error occurred during authentication."
+  let errorDetails = errorDescription || "No additional error details available."
 
   // Handle different error types
   if (error === "Configuration") {
@@ -24,11 +27,18 @@ function ErrorContent() {
     error === "EmailCreateAccount"
   ) {
     errorMessage = "There was an error during the OAuth authentication process."
+    if (error === "OAuthCallback") {
+      errorMessage = "Error during OAuth callback. This might be due to a misconfigured redirect URI."
+    }
   } else if (error === "EmailSignin") {
     errorMessage = "The email could not be sent or the email provider is not properly configured."
   } else if (error === "CredentialsSignin") {
     errorMessage = "Invalid sign in credentials. Please check your email and password."
   }
+
+  // Extract OAuth-specific errors that might be passed in the URL
+  const provider = searchParams.get("provider") || "Unknown"
+  const callbackUrl = searchParams.get("callbackUrl") || "Not provided"
 
   return (
     <div className="flex min-h-[calc(100vh-80px)] items-center justify-center bg-gray-50">
@@ -36,7 +46,43 @@ function ErrorContent() {
         <div className="text-center">
           <h1 className="text-3xl font-extrabold text-gray-900">Authentication Error</h1>
           <div className="mt-6 text-red-600">{errorMessage}</div>
+          {errorDescription && (
+            <div className="mt-2 text-sm text-gray-600">
+              <p>{errorDescription}</p>
+            </div>
+          )}
         </div>
+        
+        <button
+          onClick={() => setShowDebugInfo(!showDebugInfo)}
+          className="mt-4 text-sm text-blue-600 underline"
+        >
+          {showDebugInfo ? "Hide" : "Show"} Debug Information
+        </button>
+        
+        {showDebugInfo && (
+          <div className="mt-4 rounded border border-gray-200 bg-gray-50 p-4 text-left text-xs">
+            <h3 className="font-bold">Debug Information:</h3>
+            <ul className="mt-2 space-y-1">
+              <li><span className="font-medium">Error Code:</span> {error || "None"}</li>
+              <li><span className="font-medium">Provider:</span> {provider}</li>
+              <li><span className="font-medium">Callback URL:</span> {callbackUrl}</li>
+              <li><span className="font-medium">Error Details:</span> {errorDetails}</li>
+              {/* Include all search params for debugging */}
+              <li className="mt-2 pt-2 border-t border-gray-200">
+                <details>
+                  <summary className="cursor-pointer font-medium">All Parameters</summary>
+                  <pre className="mt-2 overflow-auto max-h-40">
+                    {Array.from(searchParams.entries()).map(([key, value]) => (
+                      `${key}: ${value}\n`
+                    ))}
+                  </pre>
+                </details>
+              </li>
+            </ul>
+          </div>
+        )}
+        
         <div className="mt-6">
           <Link
             href="/auth/login"
