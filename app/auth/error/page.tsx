@@ -11,7 +11,7 @@ function ErrorContent() {
   const [showDebugInfo, setShowDebugInfo] = useState(false)
 
   let errorMessage = "An error occurred during authentication."
-  let errorDetails = errorDescription || "No additional error details available."
+  const errorDetails = errorDescription || "No additional error details available."
 
   // Handle different error types
   if (error === "Configuration") {

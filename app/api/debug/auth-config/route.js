@@ -45,7 +45,7 @@ function headers() {
     
     // We're returning an empty Headers object as fallback
     return headers;
-  } catch (e) {
+  } catch (_) { // Changed 'e' to '_' to indicate unused parameter
     return headers;
   }
 }
