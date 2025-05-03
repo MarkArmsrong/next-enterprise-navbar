@@ -45,6 +45,7 @@ function headers() {
     
     // We're returning an empty Headers object as fallback
     return headers;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_) { // Changed 'e' to '_' to indicate unused parameter
     return headers;
   }
