@@ -35,10 +35,31 @@ In addition, the template inherits all the powerful features from our main Next.
 - **[Radix UI](https://www.radix-ui.com/)** - Headless UI components for endless customization
 - **[CVA](http://cva.style/)** - Create a consistent, reusable, and atomic design system
 
+## Authentication
+
+This template includes a comprehensive client-side focused authentication system built with NextAuth.js:
+
+- 🔑 **Multiple Auth Providers** - Support for Google, GitHub, and email/password credentials
+- 🌐 **JWT-based Sessions** - Client-side JWT authentication for improved performance
+- 🔄 **Multi-provider Account Linking** - Seamlessly link multiple authentication methods to a single account
+- 🖼️ **Provider-specific Profile Images** - Stores and displays the correct profile image based on auth provider
+- 📱 **Custom Authentication Pages** - Professionally designed login/logout pages
+- 🛡️ **Robust Error Handling** - Comprehensive logging and error management
+- 📊 **Session Enhancement** - Client-side session augmentation with user details and provider info
+
+The authentication implementation focuses on client-side state management with:
+- JWT strategy for browser-based auth state persistence
+- Enhanced session data directly available on the client
+- OAuth flows optimized for browser-based authentication
+- Custom pages for auth-related user interactions
+
+This modern approach aligns with Next.js App Router architecture for optimal performance and user experience.
+
 ## Table of Contents
 
 - [Next.js Enterprise Navbar Template](#nextjs-enterprise-navbar-template)
   - [Navbar Features](#navbar-features)
+  - [Authentication](#authentication)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#-getting-started)
   - [Deployment](#-deployment)
